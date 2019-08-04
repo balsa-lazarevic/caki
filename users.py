@@ -1,4 +1,3 @@
-import pymongo
 import jsonschema
 from jsonschema import validate
 
@@ -7,7 +6,6 @@ users_v = {
         "bsonType": "object",
         "required": [ "username", "password", "email", "role" ],
         "properties": {
-        # "user_id":  
             "username": {
                 "bsonType": "string",
                 "description": "unique index, string from 3 to 20 characters",

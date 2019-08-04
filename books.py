@@ -1,4 +1,3 @@
-import pymongo
 import jsonschema
 from jsonschema import validate
 
