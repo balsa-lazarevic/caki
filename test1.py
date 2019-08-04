@@ -23,7 +23,7 @@ else:
 
 # users testing
 try:
-    users_col.insert_one({ 
+    users_col.insert_one({
         "username": "Aki",
         "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
         "email": "aki@gmail.com",
@@ -34,7 +34,7 @@ except Exception as e:
     print(e)
 
 try:
-    users_col.insert_one({ 
+    users_col.insert_one({
         "username": "Staki2",
         "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
         "email": "aki@gmail.com",
