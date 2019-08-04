@@ -120,10 +120,10 @@ else:
 #books testing
 try:
     my_book_1 = { 
-        "name": "Staki new q",
+        "name": "Staki",
         "price": 20.34,
         "description": "neki glupi opis",
-        "quantity": 7.45,
+        "quantity": 7,
         "pages": 1245,
         "image": "staki.jpg"
     }
@@ -148,10 +148,9 @@ except Exception as e:
 try:
     my_user_1 = { 
         "username": "Aki",
-        "password": "jidjejiejd",
+        "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
         "email": "aki@gmail.com",
-        "role": 0,
-        "book": "lista ObjectID-eva",
+        "role": 1
     }
     doc1 = users_col.insert_one(my_user_1)
 except Exception as e:
@@ -159,11 +158,10 @@ except Exception as e:
 
 try:
     my_user_2 = { 
-        "username": "Aki",
-        "password": "jidjejiejd",
+        "username": "Staki2",
+        "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
         "email": "aki@gmail.com",
-        "role": 0,
-        "book": "lista ObjectID-eva",
+        "role": 0
     }
     doc2 = users_col.insert_one(my_user_2)
 except Exception as e:
