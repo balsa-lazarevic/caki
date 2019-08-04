@@ -20,7 +20,9 @@ books_v = {
         "bsonType": "object",
         "required": [ "name", "price" ],
         "properties": {
-        # "user_id":  
+            "user_id": {
+                "bsonType": "object"
+            },
             "name": {
                 "bsonType": "string",
                 "description": "unique index, string from 3 to 15 characters",
@@ -112,37 +114,11 @@ else:
 #users_test
 if "users_test" in db.list_collection_names():
    users_col = db["users_test"]
-   users_col .create_index("username", unique=True)
+   users_col.create_index("username", unique=True)
 else:
    users_col = db.create_collection("users_test", validator=users_v)
 
 
-#books testing
-try:
-    my_book_1 = { 
-        "name": "Staki",
-        "price": 20.34,
-        "description": "neki glupi opis",
-        "quantity": 7,
-        "pages": 1245,
-        "image": "staki.jpg"
-    }
-    doc1 = books_col.insert_one(my_book_1)
-except Exception as e:
-    print(e)
-
-try:
-    my_book_2 = { 
-        "name": "Aki",
-        "price": 2000,
-        "description": "neki glupi opis",
-        "quantity": 4,
-        "pages": 1245,
-        "image": "aki.jpg"
-    }
-    doc2 = books_col.insert_one(my_book_2)
-except Exception as e:
-    print(e)
 
 #users testing
 try:
@@ -164,6 +140,38 @@ try:
         "role": 0
     }
     doc2 = users_col.insert_one(my_user_2)
+except Exception as e:
+    print(e)
+
+user_sel = users_col.find_one()
+print(user_sel["_id"])
+print(type(user_sel["_id"]))
+#books testing
+try:
+    my_book_1 = {
+        "user_id": user_sel,
+        "name": "Staki",
+        "price": 20.34,
+        "description": "neki glupi opis",
+        "quantity": 7,
+        "pages": 1245,
+        "image": "staki.jpg"
+    }
+    doc1 = books_col.insert_one(my_book_1)
+except Exception as e:
+    print(e)
+
+try:
+    my_book_2 = {
+        "user_id": user_sel,
+        "name": "Aki",
+        "price": 2000,
+        "description": "neki glupi opis",
+        "quantity": 4,
+        "pages": 1245,
+        "image": "aki.jpg"
+    }
+    doc2 = books_col.insert_one(my_book_2)
 except Exception as e:
     print(e)
 
