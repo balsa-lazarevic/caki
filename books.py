@@ -4,9 +4,9 @@ from jsonschema import validate
 books_v = {
     "$jsonSchema": {
         "bsonType": "object",
-        "required": [ "name", "price" ],
+        "required": ["name", "price"],
         "properties": {
-        # "user_id":  
+        # "user_id": 
             "name": {
                 "bsonType": "string",
                 "description": "unique index, string from 3 to 15 characters",
@@ -35,7 +35,7 @@ books_v = {
             "image": {
                 "bsonType": "string",
                 "description": "image path as string from 5 to 150 characters",
-            #    "default": "default.png",
+                # "default": "default.png",
                 "minLength": 5,
                 "maxLength": 150
             },

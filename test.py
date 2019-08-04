@@ -5,7 +5,7 @@ from jsonschema import validate
 
 MONGO_HOST = 'ds149742.mlab.com'
 MONGO_PORT = 49742
-MONGO_DB   = 'heroku_776l5bh4'
+MONGO_DB = 'heroku_776l5bh4'
 MONGO_USER = 'connection_user'
 MONGO_PASS = 'cakiproject123'
 BOOKS_COLL = 'books'
@@ -18,7 +18,7 @@ db.authenticate(MONGO_USER, MONGO_PASS)
 books_v = {
     "$jsonSchema": {
         "bsonType": "object",
-        "required": [ "name", "price" ],
+        "required": ["name", "price"],
         "properties": {
             "user_id": {
                 "bsonType": "object"
@@ -51,7 +51,7 @@ books_v = {
             "image": {
                 "bsonType": "string",
                 "description": "image path as string from 5 to 150 characters",
-            #    "default": "default.png",
+                # "default": "default.png",
                 "minLength": 5,
                 "maxLength": 150
             },
@@ -68,9 +68,9 @@ books_v = {
 users_v = {
     "$jsonSchema": {
         "bsonType": "object",
-        "required": [ "username", "password", "email", "role" ],
+        "required": ["username", "password", "email", "role"],
         "properties": {
-        # "user_id":  
+        # "user_id":
             "username": {
                 "bsonType": "string",
                 "description": "unique index, string from 3 to 20 characters",
@@ -104,19 +104,19 @@ users_v = {
 }
 
 
-#books_test
+# books_test
 if "books_test" in db.list_collection_names():
-   books_col = db["books_test"]
-   books_col .create_index("name", unique=True)
+    books_col = db["books_test"]
+    books_col .create_index("name", unique=True)
 else:
-   books_col = db.create_collection("books_test", validator=books_v)
+    books_col = db.create_collection("books_test", validator=books_v)
 
-#users_test
+# users_test
 if "users_test" in db.list_collection_names():
-   users_col = db["users_test"]
-   users_col.create_index("username", unique=True)
+    users_col = db["users_test"]
+    users_col.create_index("username", unique=True)
 else:
-   users_col = db.create_collection("users_test", validator=users_v)
+    users_col = db.create_collection("users_test", validator=users_v)
 
 
 
