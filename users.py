@@ -4,7 +4,7 @@ from jsonschema import validate
 users_v = {
     "$jsonSchema": {
         "bsonType": "object",
-        "required": [ "username", "password", "email", "role" ],
+        "required": ["username", "password", "email", "role"],
         "properties": {
             "username": {
                 "bsonType": "string",

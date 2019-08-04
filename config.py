@@ -5,7 +5,7 @@ import pymongo
 
 MONGO_HOST = 'ds149742.mlab.com'
 MONGO_PORT = 49742
-MONGO_DB   = 'heroku_776l5bh4'
+MONGO_DB = 'heroku_776l5bh4'
 MONGO_USER = 'connection_user'
 MONGO_PASS = 'cakiproject123'
 BOOKS_COLL = 'books'
