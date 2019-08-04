@@ -16,92 +16,90 @@ db = connection[MONGO_DB]
 db.authenticate(MONGO_USER, MONGO_PASS)
 
 books_v = {
-      "$jsonSchema": {
-          "bsonType": "object",
-          "required": [ "name", "price" ],
-          "properties": {
-            # "user_id":  
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": [ "name", "price" ],
+        "properties": {
+        # "user_id":  
             "name": {
-               "bsonType": "string",
-               "description": "unique index, string from 3 to 15 characters",
-               "minLength": 3,
-               "maxLength": 15
+                "bsonType": "string",
+                "description": "unique index, string from 3 to 15 characters",
+                "minLength": 3,
+                "maxLength": 15
             },
             "price": {
-               "bsonType": "number",
-               "description": "float price as number from 1 to 10000",
-               "minimum": 1,
-               "maximum": 10000
+                "bsonType": "number",
+                "description": "float price as number from 1 to 10000",
+                "minimum": 1,
+                "maximum": 10000
             },
             "description": {
-               "bsonType": "string",
-               "description": "string from 10 to 150 characters",
-               "minLength": 10,
-               "maxLength": 150
+                "bsonType": "string",
+                "description": "string from 10 to 150 characters",
+                "minLength": 10,
+                "maxLength": 150
             },
             "quantity": {
-               "bsonType": "int",
-               "description": "integer number of boks as number from 1 to 10, default is 1",
-               "minimum": 1,
-               "maximum": 10
-               # "default": 1
+                "bsonType": "int",
+                "description": "integer number of boks as number from 1 to 10, default is 1",
+                "minimum": 1,
+                "maximum": 10
+                # "default": 1
             },
             "image": {
-               "bsonType": "string",
-               "description": "image path as string from 5 to 150 characters",
+                "bsonType": "string",
+                "description": "image path as string from 5 to 150 characters",
             #    "default": "default.png",
-               "minLength": 5,
-               "maxLength": 150
+                "minLength": 5,
+                "maxLength": 150
             },
             "pages": {
-               "bsonType": "int",
-               "description": "integer number of book pages from 10 to 5000",
-               "minimum": 10,
-               "maximum": 50000
+                "bsonType": "int",
+                "description": "integer number of book pages from 10 to 5000",
+                "minimum": 10,
+                "maximum": 50000
             }
-          }
-      }
+        }
     }
+}
 
 users_v = {
-      "$jsonSchema": {
-          "bsonType": "object",
-          "required": [ "username", "password", "email", "role" ],
-          "properties": {
-            # "user_id":  
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": [ "username", "password", "email", "role" ],
+        "properties": {
+        # "user_id":  
             "username": {
-               "bsonType": "string",
-               "description": "unique index, string from 3 to 20 characters",
-               "minLength": 3,
-               "maxLength": 20
+                "bsonType": "string",
+                "description": "unique index, string from 3 to 20 characters",
+                "minLength": 3,
+                "maxLength": 20
             },
             "password": {
-               "bsonType": "string",
-               "description": "password is a string from 5 to 25 characters",
-               "minLength": 5,
-               "maxLength": 25
+                "bsonType": "string",
+                "description": "password is a string from 5 to 25 characters written as SHA256 hash of 64 HEX characters",
+                "minLength": 64,
+                "maxLength": 64
             },
             "email": {
-               "bsonType": "string",
-               "description": "string from 5 to 35 characters",
-               "minLength": 5,
-               "maxLength": 35
+                "bsonType": "string",
+                "description": "string from 5 to 35 characters",
+                "minLength": 5,
+                "maxLength": 35
             },
             "role": {
-               "bsonType": "int",
-               "description": "integer number of boks as number from 1 to 10, default is 1",
-               "minimum": 0,
-               "maximum": 1
+                "bsonType": "int",
+                "description": "integer number of boks as number from 1 to 10, default is 1",
+                "minimum": 0,
+                "maximum": 1
             },
             "book": {
-               "bsonType": "string",
-               "description": "image path as string from 5 to 150 characters",
-               "minLength": 5,
-               "maxLength": 150
+                "bsonType": "object",
+                "description": "list of book object IDs",
             }
-          }
-      }
+        }
     }
+}
 
 
 #books_test
@@ -160,14 +158,14 @@ except Exception as e:
     print(e)
 
 try:
-    my_user_1 = { 
+    my_user_2 = { 
         "username": "Aki",
         "password": "jidjejiejd",
         "email": "aki@gmail.com",
         "role": 0,
         "book": "lista ObjectID-eva",
     }
-    doc1 = users_col.insert_one(my_user_1)
+    doc2 = users_col.insert_one(my_user_2)
 except Exception as e:
     print(e)
 
