@@ -1,5 +1,4 @@
 import jsonschema
-from jsonschema import validate
 
 users_v = {
     "$jsonSchema": {

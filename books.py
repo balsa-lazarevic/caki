@@ -1,12 +1,10 @@
 import jsonschema
-from jsonschema import validate
 
 books_v = {
     "$jsonSchema": {
         "bsonType": "object",
         "required": ["name", "price"],
         "properties": {
-        # "user_id":
             "name": {
                 "bsonType": "string",
                 "description": "unique index, string from 3 to 15 characters",
