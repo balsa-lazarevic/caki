@@ -1,19 +1,17 @@
-import datetime
-import pymongo
-import jsonschema
-from jsonschema import validate
+from config import *
 
-MONGO_HOST = 'ds149742.mlab.com'
-MONGO_PORT = 49742
-MONGO_DB = 'heroku_776l5bh4'
-MONGO_USER = 'connection_user'
-MONGO_PASS = 'cakiproject123'
-BOOKS_COLL = 'books'
-USERS_COLL = 'users'
-
-connection = pymongo.MongoClient(host=MONGO_HOST, port=MONGO_PORT)
-db = connection[MONGO_DB]
-db.authenticate(MONGO_USER, MONGO_PASS)
+#
+# MONGO_HOST = 'ds149742.mlab.com'
+# MONGO_PORT = 49742
+# MONGO_DB = 'heroku_776l5bh4'
+# MONGO_USER = 'connection_user'
+# MONGO_PASS = 'cakiproject123'
+# BOOKS_COLL = 'books'
+# USERS_COLL = 'users'
+#
+# connection = pymongo.MongoClient(host=MONGO_HOST, port=MONGO_PORT)
+# db = connection[MONGO_DB]
+# db.authenticate(MONGO_USER, MONGO_PASS)
 
 books_v = {
     "$jsonSchema": {
@@ -121,7 +119,7 @@ else:
 # users testing
 try:
     my_user_1 = {
-        "username": "Aki",
+        "username": "Aki2",
         "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
         "email": "aki@gmail.com",
         "role": 1
@@ -132,7 +130,7 @@ except Exception as e:
 
 try:
     my_user_2 = {
-        "username": "Staki2",
+        "username": "Staki22",
         "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
         "email": "aki@gmail.com",
         "role": 0
@@ -148,7 +146,7 @@ print(type(user_sel["_id"]))
 try:
     my_book_1 = {
         "user_id": user_sel,
-        "name": "Staki",
+        "name": "Staki2",
         "price": 20.34,
         "description": "neki glupi opis",
         "quantity": 7,
@@ -162,7 +160,7 @@ except Exception as e:
 try:
     my_book_2 = {
         "user_id": user_sel,
-        "name": "Aki",
+        "name": "Aki2",
         "price": 2000,
         "description": "neki glupi opis",
         "quantity": 4,

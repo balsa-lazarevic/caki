@@ -1,5 +1,3 @@
-import jsonschema
-
 users_v = {
     "$jsonSchema": {
         "bsonType": "object",
