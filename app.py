@@ -14,9 +14,10 @@ api = Api(app)
 @app.route('/')
 # @app.route('/index')
 def home():
-    return render_template("index.html")
-    # return "<p>TESTING</p>"
-
+    #if user is loged in
+    # return render_template("index.html")
+    #if user is not loged in
+    return render_template("base_visitor.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

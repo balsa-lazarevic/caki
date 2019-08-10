@@ -1,8 +1,6 @@
 # mongo ds149742.mlab.com:49742/heroku_776l5bh4 -u connection_user -p cakiproject123
 # mongodb://connection_user:cakiproject123@ds149742.mlab.com:49742/heroku_776l5bh4
 import pymongo
-from books import *
-from users import *
 
 MONGO_HOST = 'ds149742.mlab.com'
 MONGO_PORT = 49742
