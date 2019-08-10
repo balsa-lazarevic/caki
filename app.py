@@ -1,30 +1,73 @@
 import os
-from werkzeug.utils import secure_filename
-from flask import Flask, request, render_template
+from werkzeug.utils import secure_filename, escape, redirect
+from flask import Flask, request, render_template, url_for, make_response, session
+from flask_jwt import JWT, jwt_required
 from flask_restful import Resource, Api
 from bson.json_util import dumps
 from config import *
+from security import authenticate, identity
 
 app = Flask(__name__)
 api = Api(app)
+jwt = JWT(app, authenticate, identity)
+
+
+@app.route('/')
+def index():
+    resp = make_response("INDEX")
+    resp.set_cookie('username', 'the username')
+    return resp
+
+#
+# @app.route('/home')
+# def home():
+#     #if user is loged in
+#     # return render_template("index.html")
+#     #if user is not loged in
+#     return render_template("base.html")
 
 
 @app.route('/home')
-# @app.route('/index')
 def home():
-    #if user is loged in
-    # return render_template("index.html")
-    #if user is not loged in
-    return render_template("base.html")
+    if 'username' in session:
+            return 'Logged in as %s' % escape(session['username'])
+    return redirect(url_for('login'))
 
-@app.route('/login')
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        return redirect(url_for('home'))
     return render_template("login.html")
+
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('home'))
 
 
 @app.route('/register')
 def register():
     return render_template("registration_form.html")
+
+
+@app.route('/user/<username>')
+def profile(username):
+    return '{}\'s profile'.format(escape(username))
+
+
+@app.route('/upload')
+def upload_file():
+    return render_template('upload.html')
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
+
 
 if __name__ == "__main__":
     app.run(debug=True)
@@ -97,6 +140,16 @@ class Book(Resource):
                 return {"message": "Book with this name not found."}, 404
         except Exception as e:
             return {"error": str(e)}, 400
+
+
+class TokenRefresh(Resource):
+    def post(self):
+        return {'message': 'Token refresh'}
+
+
+class AllUsers(Resource):
+    def get(self):
+        return {'message': 'List of users'}
 
 
 class Books(Resource):

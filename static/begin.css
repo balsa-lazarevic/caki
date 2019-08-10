@@ -3,6 +3,11 @@ body, html {
     overflow-y:hidden;
 }
 
+.navbar-brand{
+    font-family: Satisfy, serif;
+
+}
+
 .hero-image {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("images/bg1.jpg");
   height: 100%;
