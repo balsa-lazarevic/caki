@@ -6,10 +6,17 @@ from bson.json_util import dumps
 
 from config import *
 
-import pymongo
-
 app = Flask(__name__)
 api = Api(app)
+
+
+@app.route("/")  # adresa server /, npr. https://google.com/
+def home():
+    return "Hello"
+
+
+app.run(port=5000)
+
 
 class Book(Resource):
 
@@ -23,8 +30,9 @@ class Book(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-    def post(self, name): 
+    def post(self, name):
         try:
+            request_data = request.get_json()
             upload_image = request.files['image']
             upload_image.save(os.path.join(app.instance_path, 'uploads', secure_filename(upload_image.filename)))
             upload_image_url = '127.0.0.1:5000/uploads/' + upload_image.filename
@@ -35,7 +43,7 @@ class Book(Resource):
                 "image": upload_image_url,
                 "price": request_data["price"],
                 "quantity": request_data["quantity"],
-                #ToDo - get user
+                # ToDo - get user
                 "user": request_data["user"],
                 "pages": request_data["pages"],
             }
@@ -44,52 +52,59 @@ class Book(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-    def put(self, name): 
+    def put(self, name):
         try:
-            new_book = { "$set": {
+            request_data = request.get_json()
+            new_book = {"$set": {
                 "name": request_data["name"],
                 "description": request_data["description"],
-                #ToDo - upload image
+                # ToDo - upload image
                 "image": request_data["image"],
                 "price": request_data["price"],
                 "quantity": request_data["quantity"],
-                #ToDo - get user
+                # ToDo - get user
                 "user": request_data["user"],
                 "pages": request_data["pages"],
             }}
 
-            update_query = { {"name": name} }
+            update_query = {{"name": name}}
             books_col.update_one(update_query, new_book)
 
             return dumps(new_book), 201
         except Exception as e:
             return {"error": str(e)}, 400
 
-    def delete(self, name): 
+    def delete(self, name):
         try:
-            delete_query = { {"name": name} }
-            books_col.delete_one(delete_query)
-
-            return dumps(new_user), 201
+            student = books_col.find_one_and_delete({"name": name})
+            if student:
+                return {"message": "Book deleted."}, 200
+                # return dumps(new_book), 201
+            else:
+                return {"message": "Book with this name not found."}, 404
         except Exception as e:
             return {"error": str(e)}, 400
-        
+
+
 class Books(Resource):
 
     def get(self):
         try:
+            request_data = request.get_json()
             books = list(books_col.find())
             if books:
                 return dumps(books), 200
             else:
-                return None, 404 
+                return None, 404
         except Exception as e:
             return dumps({"error": str(e)})
+
 
 class User(Resource):
 
     def get(self, name):
         try:
+            request_data = request.get_json()
             user = list(users_col.find({"name": name}))
             if len(user) > 0:
                 return dumps(user), 200
@@ -98,8 +113,9 @@ class User(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-    def post(self, name): 
+    def post(self, name):
         try:
+            request_data = request.get_json()
             new_user = {
                 "name": request_data["name"],
                 "description": request_data["description"],
@@ -114,9 +130,10 @@ class User(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-    def put(self, name): 
+    def put(self, name):
         try:
-            new_user = { "$set": {
+            request_data = request.get_json()
+            new_user = {"$set": {
                 "name": request_data["name"],
                 "description": request_data["description"],
                 "image": request_data["image"],
@@ -126,21 +143,23 @@ class User(Resource):
                 "pages": request_data["pages"],
             }}
 
-            update_query = { {"name": name} }
+            update_query = {{"name": name}}
             users_col.update_one(update_query, new_user)
 
             return dumps(new_user), 201
         except Exception as e:
             return {"error": str(e)}, 400
-    
-    def delete(self, name): 
-        try:
-            delete_query = { {"name": name} }
-            users_col.delete_one(delete_query)
 
-            return dumps(new_user), 201
+    def delete(self, name):
+        try:
+            student = users_col.find_one_and_delete({"name": name})
+            if student:
+                return {"message": "User deleted."}, 200
+            else:
+                return {"message": "User with this name not found."}, 404
         except Exception as e:
             return {"error": str(e)}, 400
+
 
 class Users(Resource):
 
@@ -150,9 +169,10 @@ class Users(Resource):
             if users:
                 return dumps(users), 200
             else:
-                return None, 404 
+                return None, 404
         except Exception as e:
             return dumps({"error": str(e)})
+
 
 api.add_resource(User, "/book/<string:name>")
 api.add_resource(Users, "/books")

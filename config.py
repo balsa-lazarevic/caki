@@ -17,7 +17,7 @@ db = connection[MONGO_DB]
 db.authenticate(MONGO_USER, MONGO_PASS)
 users_col = db[USERS_COLL]
 books_col = db[BOOKS_COLL]
-# #Dodaje validatore
+#Dodaje validatore
 #
 # db.runCommand({
 #   "collMod": "books",
