@@ -3,8 +3,6 @@ from werkzeug.utils import secure_filename
 from flask import Flask, request, render_template
 from flask_restful import Resource, Api
 from bson.json_util import dumps
-
-
 from config import *
 
 app = Flask(__name__)
@@ -17,7 +15,16 @@ def home():
     #if user is loged in
     # return render_template("index.html")
     #if user is not loged in
-    return render_template("base_visitor.html")
+    return render_template("base.html")
+
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
+
+@app.route('/register')
+def register():
+    return render_template("registration_form.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

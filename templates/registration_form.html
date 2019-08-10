@@ -1,0 +1,50 @@
+{#{% extends 'base.html' %}#}
+{% extends 'base_visitor.html' %}
+{% block title %}Register{% endblock %}
+{% block register_active %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+
+    <div class="row">
+
+        <div class="col-sm-12 col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Create new account</h3>
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+                    <form novalidate="novalidate" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                        {% include 'music/form_template.html' %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer">
+                    Already have an account? <a href="#">Click here</a> to log in.
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                   <h3>Book API</h3>
+                    <p>CAKI nas je natjero da napravimo ovo</p>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                        when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                        It has survived not only five centuries, but also the leap into electronic typesetting,
+                        remaining essentially unchanged.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

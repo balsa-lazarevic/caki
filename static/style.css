@@ -1,0 +1,52 @@
+body{
+    background: url("images/background.jpg");
+}
+
+
+.navbar{
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+
+.navbar-brand{
+    font-family: Satisfy, serif;
+
+}
+
+ul.errorlist {
+    padding-left: 0;
+}
+
+ul.errorlist > li {
+    list-style: none;
+}
+ul.nav a:hover { color: #ff881a !important; }
+
+img {
+    width: 250px;
+    height: 350px;
+}
+
+#star {
+    width: 16px;
+    height: 16px;
+}
+
+
+.glyphicon-star {
+    color: #CCCCCC;
+    font-size: 16px;
+}
+
+
+.glyphicon-star.active {
+    color: #FDB230;
+}
+
+
+#welcome {
+    text-transform: uppercase;
+}
+
