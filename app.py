@@ -1,8 +1,9 @@
 import os
 from werkzeug.utils import secure_filename
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_restful import Resource, Api
 from bson.json_util import dumps
+
 
 from config import *
 
@@ -10,11 +11,15 @@ app = Flask(__name__)
 api = Api(app)
 
 
-@app.route("/")  # adresa server /, npr. https://google.com/
+@app.route('/')
+# @app.route('/index')
 def home():
-    return "Hello"
+    return render_template("index.html")
+    # return "<p>TESTING</p>"
 
 
+if __name__ == "__main__":
+    app.run(debug=True)
 app.run(port=5000)
 
 
