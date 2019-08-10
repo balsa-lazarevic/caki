@@ -9,7 +9,7 @@ app = Flask(__name__)
 api = Api(app)
 
 
-@app.route('/')
+@app.route('/home')
 # @app.route('/index')
 def home():
     #if user is loged in

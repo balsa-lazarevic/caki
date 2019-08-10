@@ -1,9 +1,38 @@
-{#{% extends 'base.html' %}#}
-{% extends 'base_visitor.html' %}
-{% block title %}Register{% endblock %}
-{% block register_active %}active{% endblock %}
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+    <title>BOOKS-API</title>
+    <link rel="shortcut icon" type="image/png" href=#/>
+    <link rel="stylesheet" type="text/css" href="static/style.css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
 
-{% block body %}
+        <!-- Header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('home') }}">BOOKS-API</a>
+        </div>
+
+        <!-- Items -->
+        <div class="collapse navbar-collapse" id="topNavBar">
+            <ul class="nav navbar-nav navbar-right">
+                <li class=""><a href="{{ url_for('register') }}">Register</a></li>
+                <li class="{% block login_active %}{% endblock %}"><a href="#">Log In</a></li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
 <div class="container-fluid">
 
     <div class="row">
@@ -16,7 +45,7 @@
                         <p><strong>{{ error_message }}</strong></p>
                     {% endif %}
                     <form novalidate="novalidate" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-                        {% include 'music/form_template.html' %}
+                        {% include 'form_template.html' %}
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <button type="submit" class="btn btn-success">Submit</button>
@@ -25,7 +54,7 @@
                     </form>
                 </div>
                 <div class="panel-footer">
-                    Already have an account? <a href="#">Click here</a> to log in.
+                    Already have an account? <a href="{{ url_for('login') }}">Click here</a> to log in.
                 </div>
             </div>
         </div>
@@ -47,4 +76,3 @@
     </div>
 
 </div>
-{% endblock %}
