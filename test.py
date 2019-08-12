@@ -27,7 +27,7 @@ else:
 # users testing
 try:
     users_col.insert_one({
-        "username": "Aki",
+        "username": "Akiiiiiiiiiiiiii",
         "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
         "email": "aki@gmail.com",
         "role": 1
@@ -38,7 +38,7 @@ except Exception as e:
 
 try:
     users_col.insert_one({
-        "username": "Staki2",
+        "username": "Stakiiiiiiiiiiii2",
         "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
         "email": "aki@gmail.com",
         "role": 0
@@ -52,7 +52,7 @@ user_id_sel = user_sel["_id"]
 try:
     books_col.insert_one({
         "user_id": user_id_sel,
-        "name": "Staki",
+        "name": "Stakiiiiiiiiiii",
         "price": 20.34,
         "description": "neki glupi opis",
         "quantity": 7,
@@ -66,7 +66,7 @@ except Exception as e:
 try:
     books_col.insert_one({
         "user_id": user_id_sel,
-        "name": "Aki",
+        "name": "Akiiiiiiiiiiiiii",
         "price": 2000,
         "description": "neki glupi opis",
         "quantity": 4,

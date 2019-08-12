@@ -15,6 +15,10 @@ db = connection[MONGO_DB]
 db.authenticate(MONGO_USER, MONGO_PASS)
 users_col = db[USERS_COLL]
 books_col = db[BOOKS_COLL]
+
+# print(db.list_collection_names())
+# users_col = db[USERS_COLL]
+
 #Dodaje validatore
 #
 # db.runCommand({
