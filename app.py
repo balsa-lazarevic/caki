@@ -7,7 +7,9 @@ from bson.json_util import dumps
 from config import *
 from security import authenticate, identity
 from users import users_v
-from logger import log
+from books import books_v
+
+# from logger import log
 
 
 if not "users" in db.list_collection_names():
@@ -16,6 +18,11 @@ if not "users" in db.list_collection_names():
 else:
     users_coll = db['users']
 
+if not "books" in db.list_collection_names():
+    books_coll = db.create_collection('books', validator=books_v)
+    books_coll.create_index('index', unique=True)
+else:
+    books_coll = db['books']
 
 app = Flask(__name__)
 app.secret_key = os.urandom(12).hex()
@@ -37,9 +44,10 @@ def logg():
 
 @app.route('/home')
 def home():
-    #TODO if user is loged in  return render_template("index.html")
-    #TODO if user is not loged in:
+    # TODO if user is loged in  return render_template("index.html")
+    # TODO if user is not loged in:
     return render_template("base.html")
+
 
 # @app.route('/home')
 # def home():
@@ -78,7 +86,7 @@ def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
 
-#Balsa
+# Balsa
 # class Book(Resource):
 #
 #     def get(self, name):
@@ -256,7 +264,7 @@ def page_not_found(error):
 # api.add_resource(Users, "/users")
 
 
-#Ja
+# Ja
 
 class User(Resource):
     def get(self, name):
@@ -269,7 +277,7 @@ class User(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-    # @jwt_required()
+    @jwt_required()
     def post(self, name):
         try:
             request_data = request.get_json()
@@ -284,7 +292,7 @@ class User(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-    # @jwt_required()
+    @jwt_required()
     def delete(self, name):
         try:
             user = users_coll.find_one_and_delete({"username": name})
@@ -295,7 +303,7 @@ class User(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-    # @jwt_required()
+    @jwt_required()
     def put(self, name):
         try:
             '''
@@ -314,7 +322,7 @@ class User(Resource):
             request_data = parser.parse_args()
 
             new_user = {
-                "username": request_data["username"] if request_data["username"] else user["username"] ,
+                "username": request_data["username"] if request_data["username"] else user["username"],
                 "email": request_data["email"] if request_data["email"] else user["email"],
                 "password": request_data["password"] if request_data["password"] else user["password"],
                 "role": request_data["role"] if request_data["role"] else user["role"],
@@ -336,7 +344,6 @@ class UserList(Resource):
         # return 1
         try:
             users = list(users_coll.find())
-            print(users)
             if users:
                 return dumps(users), 200
             else:
@@ -345,10 +352,36 @@ class UserList(Resource):
             return dumps({"error": str(e)})
 
 
-# log.info()
 api.add_resource(User, "/user/<string:name>")
 api.add_resource(UserList, "/users")
 
+
+class Books(Resource):
+    def get(self, name):
+        try:
+            book = list(books_coll.find({"name": name}))
+            if book:
+                return dumps(book), 200
+            else:
+                return {"message": "Book with this name not found."}, 404
+        except Exception as e:
+            return {"error": str(e)}, 400
+
+
+class BooksList(Resource):
+    def get(self):
+        try:
+            books = list(books_coll.find())
+            if books:
+                return dumps(books), 200
+            else:
+                return None, 404
+        except Exception as e:
+            return dumps({"error": str(e)})
+
+
+api.add_resource(Books, "/book/<string:name>")
+api.add_resource(BooksList, "/books")
 
 app.run(port=5000, debug=True)
 # ToDo VALIDATORI ZA BAZU PREKO PYTHONA
