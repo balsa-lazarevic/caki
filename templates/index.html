@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>BOOKS API</title>
+<title>{% block title %}Books API{% endblock %}</title>
 <head>
     <meta charset="UTF-8">
-    <title>{API}</title>
     <link rel="shortcut icon" type="image/png" href="#"/>
     <link rel="stylesheet" type="text/css" href="static/begin.css"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -27,12 +26,12 @@
             <div class="collapse navbar-collapse" id="topNavBar">
                 <ul class="nav navbar-nav">
                     <li class="active">
-                        <a href="#">
+                        <a href="{{ url_for('books') }}">
                             <span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp;  Books
                         </a>
                     </li>
                      <li class="">
-                        <a href="#">
+                        <a href="{{ url_for('users') }}">
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;  Users
                         </a>
                     </li>
@@ -59,9 +58,9 @@
         </div>
     </nav>
 
-    <footer class="navbar navbar-fixed-bottom">
-      <div class="footer-copyright text-center py-3">© 2019 Copyright: BOOKS
-      </div>
-    </footer>
+    <!--<footer class="navbar navbar-fixed-bottom">-->
+      <!--<div class="footer-copyright text-center py-3">© 2019 Copyright: BOOKS-->
+      <!--</div>-->
+    <!--</footer>-->
 </body>
 </html>
