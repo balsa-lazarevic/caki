@@ -9,6 +9,10 @@ body{
     border-radius: 0;
 }
 
+#alert {
+    font-size: 16px;
+
+}
 
 .navbar-brand{
     font-family: Satisfy, serif;

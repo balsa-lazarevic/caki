@@ -49,6 +49,7 @@ except Exception as e:
 
 user_sel = users_col.find_one()
 user_id_sel = user_sel["_id"]
+print(type(user_id_sel))
 try:
     books_col.insert_one({
         "user_id": user_id_sel,

@@ -117,59 +117,62 @@ else:
     users_col = db.create_collection("users_test", validator=users_v)
 
 # users testing
-try:
-    my_user_1 = {
-        "username": "Aki2",
-        "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
-        "email": "aki@gmail.com",
-        "role": 1
-    }
-    doc1 = users_col.insert_one(my_user_1)
-except Exception as e:
-    print(e)
-
-try:
-    my_user_2 = {
-        "username": "Staki22",
-        "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
-        "email": "aki@gmail.com",
-        "role": 0
-    }
-    doc2 = users_col.insert_one(my_user_2)
-except Exception as e:
-    print(e)
+# try:
+#     my_user_1 = {
+#         "username": "Aki2",
+#         "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
+#         "email": "aki@gmail.com",
+#         "role": 1
+#     }
+#     doc1 = users_col.insert_one(my_user_1)
+# except Exception as e:
+#     print(e)
+#
+# try:
+#     my_user_2 = {
+#         "username": "Staki22",
+#         "password": "d7d05512c864a5f867eff324ee146a3ad4fb0e4fe8c7cb679dfb3ee95592a2ea",
+#         "email": "aki@gmail.com",
+#         "role": 0
+#     }
+#     doc2 = users_col.insert_one(my_user_2)
+# except Exception as e:
+#     print(e)
 
 user_sel = users_col.find_one()
+print(user_sel)
 print(user_sel["_id"])
 print(type(user_sel["_id"]))
 # books testing
 try:
     my_book_1 = {
-        "user_id": user_sel,
-        "name": "Staki2",
-        "price": 20.34,
+        "user_id": '5d47f01397656027fc2107d8',
+        "name": "aaaaaaaa",
+        "price": 15,
         "description": "neki glupi opis",
         "quantity": 7,
         "pages": 1245,
-        "image": "staki.jpg"
+        "image": "'C:\\Users\\pc\\Desktop\\caki\\static\\media\\eminem-recovery-official-album-cover.jpg'"
     }
-    doc1 = books_col.insert_one(my_book_1)
-except Exception as e:
-    print(e)
 
-try:
-    my_book_2 = {
-        "user_id": user_sel,
-        "name": "Aki2",
-        "price": 2000,
-        "description": "neki glupi opis",
-        "quantity": 4,
-        "pages": 1245,
-        "image": "aki.jpg"
-    }
-    doc2 = books_col.insert_one(my_book_2)
+    doc1 = books_col.insert_one(my_book_1)
+    print(doc1)
 except Exception as e:
     print(e)
+#
+# try:
+#     my_book_2 = {
+#         "user_id": user_sel,
+#         "name": "Aki2",
+#         "price": 2000,
+#         "description": "neki glupi opis",
+#         "quantity": 4,
+#         "pages": 1245,
+#         "image": "aki.jpg"
+#     }
+#     doc2 = books_col.insert_one(my_book_2)
+# except Exception as e:
+#     print(e)
 
 # ts = datetime.datetime.now().strftime("%H:%M:%S")
 # print(ts)

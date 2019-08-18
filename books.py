@@ -12,8 +12,8 @@ books_v = {
             "price": {
                 "bsonType": "number",
                 "description": "float price as number from 1 to 10000",
-                "minimum": 1,
-                "maximum": 10000
+                "minimum": float(1),
+                "maximum": float(10000)
             },
             "description": {
                 "bsonType": "string",
