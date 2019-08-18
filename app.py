@@ -2,22 +2,15 @@ import os
 import re
 from functools import wraps
 from werkzeug.utils import redirect, secure_filename
-from flask import Flask, request, render_template, url_for, make_response, session, jsonify, json, flash
-# from flask_jwt import JWT, jwt_required, current_identity
+from flask import Flask, request, render_template, url_for, make_response, session, json, flash
 from flask_restful import Resource, Api, reqparse
 from bson.json_util import dumps
 from config import *
-# from user import authenticate, identity
 from users import users_v
 from books import books_v
 from bson import json_util, ObjectId
 import hashlib
-
-
 # from logger import log
-
-
-# Validator
 
 
 def validate(to_validate, name):
@@ -134,14 +127,13 @@ def login_required(f):
 @app.route('/')
 @login_required
 def index():
-    resp = make_response("INDEX")
+    # resp = make_response("INDEX")
     # resp.set_cookie('username', 'the username')
-    return resp
+    return render_template("base.html")
 
 
 UPLOAD_FOLDER = 'C:\\Users\\pc\\Desktop\\caki\\static\\media'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
 
 
@@ -371,18 +363,21 @@ class User(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
+@app.route("/my_books")
+@login_required
+def get_my_books():
+    user_exists = list(users_coll.find({"username": str(session["username"])}))
+    b = list(books_coll.find({"user_id": ObjectId(str(user_exists[0]["_id"]))}))
+    print(b)
+    return render_template('test.html', e_list=json.loads(json_util.dumps(b)))
+
 
 @app.route("/users")
-@login_required
+# @login_required
 def users():
     try:
-        books = []
         users = list(users_coll.find())
-        for i in json.loads(json_util.dumps(users)):
-            b = list(books_coll.find({"user_id": ObjectId(i["_id"]["$oid"])}))
-            if len(b) > 0:
-                books.append(b)
-        # flash(books)
+
         if users:
             return render_template('test.html', e_list=json.loads(json_util.dumps(users)))
         else:
@@ -400,53 +395,53 @@ class Books(Resource):
             book = list(books_coll.find({"name": name}))
             if book:
                 data = json.loads(json_util.dumps(book))
-                return dumps(book), 200
+                return data, 200
             else:
                 return {"message": "Book with this name not found."}, 404
         except Exception as e:
             return {"error": str(e)}, 400
 
-    def post(self, name):
-        try:
-            request_data = request.get_json()
-            upload_image = request.files['image']
-            upload_image.save(os.path.join(app.instance_path, 'upload', secure_filename(upload_image.filename)))
-            upload_image_url = '127.0.0.1:5000/upload' + upload_image.filename
-            user_exists = list(users_coll.find({"username": str(session['username'])}))
-            user = user_exists[0]["_id"]
-            new_book = {
-                "name": request_data["name"],
-                "description": request_data["description"],
-                "image": upload_image_url,
-                "price": request_data["price"],
-                "quantity": request_data["quantity"],
-                "user": user,
-                "pages": request_data["pages"],
-            }
-            books_col.insert_one(new_book)
-            return dumps(new_book), 201
-        except Exception as e:
-            return {"error": str(e)}, 400
+    # def post(self, name):
+    #     try:
+    #         request_data = request.get_json()
+    #         upload_image = request.files['image']
+    #         upload_image.save(os.path.join(app.instance_path, 'upload', secure_filename(upload_image.filename)))
+    #         upload_image_url = '127.0.0.1:5000/upload' + upload_image.filename
+    #         user_exists = list(users_coll.find({"username": str(session['username'])}))
+    #         user = user_exists[0]["_id"]
+    #         new_book = {
+    #             "name": request_data["name"],
+    #             "description": request_data["description"],
+    #             "image": upload_image_url,
+    #             "price": request_data["price"],
+    #             "quantity": request_data["quantity"],
+    #             "user": user,
+    #             "pages": request_data["pages"],
+    #         }
+    #         books_col.insert_one(new_book)
+    #         return dumps(new_book), 201
+    #     except Exception as e:
+    #         return {"error": str(e)}, 400
 
-    def put(self, name):
-        try:
-            request_data = request.get_json()
-            new_book = {"$set": {
-                "name": request_data["name"],
-                "description": request_data["description"],
-                "image": request_data["image"],
-                "price": request_data["price"],
-                "quantity": request_data["quantity"],
-                "user": request_data["user"],
-                "pages": request_data["pages"],
-            }}
-
-            update_query = {{"name": name}}
-            books_col.update_one(update_query, new_book)
-
-            return dumps(new_book), 201
-        except Exception as e:
-            return {"error": str(e)}, 400
+    # def put(self, name):
+    #     try:
+    #         request_data = request.get_json()
+    #         new_book = {"$set": {
+    #             "name": request_data["name"],
+    #             "description": request_data["description"],
+    #             "image": request_data["image"],
+    #             "price": request_data["price"],
+    #             "quantity": request_data["quantity"],
+    #             "user": request_data["user"],
+    #             "pages": request_data["pages"],
+    #         }}
+    #
+    #         update_query = {{"name": name}}
+    #         books_col.update_one(update_query, new_book)
+    #
+    #         return dumps(new_book), 201
+    #     except Exception as e:
+    #         return {"error": str(e)}, 400
 
     def delete(self, name):
         try:
@@ -459,13 +454,11 @@ class Books(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-
 @app.route("/books")
-@login_required
+# @login_required
 def books():
     try:
         books = list(books_coll.find())
-        # flash(json.loads(json_util.dumps(books)))
         if books:
             return render_template('test.html', e_list=json.loads(json_util.dumps(books)))
         else:
@@ -473,8 +466,6 @@ def books():
     except Exception as e:
         return dumps({"error": str(e)})
 
-
 # api.add_resource(Books, "/book/<string:name>")
-# api.add_resource(BooksList, "/books")
 
 app.run(port=5000, debug=True)
