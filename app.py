@@ -136,6 +136,7 @@ def index():
 UPLOAD_FOLDER = 'C:\\Users\\pc\\Desktop\\caki\\static\\media'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 
 
 def allowed_image(filename):
@@ -166,10 +167,14 @@ def add_book():
                 # print(str(os.path.join(os.path.join(UPLOAD_FOLDER, filename))))
 
             user_exists = list(users_coll.find({"username": str(session["username"])}))
+
             # print(session["username"])
             # print(user_exists[0]["_id"])
             if request.form["quantity"] == "":
                 request.form["quantity"] = "1"
+            if re.match(r"([\\s])", str(request.form["name"])):
+                request.form["name"] = request.form["name"].replace(" ", "+")
+            print(request.form["name"])
             new_book = {
                 "user_id": ObjectId(str(user_exists[0]["_id"])),
                 "name": request.form["name"],
@@ -177,12 +182,12 @@ def add_book():
                 "description": request.form["description"],
                 "quantity": int(request.form["quantity"]),
                 "pages": int(request.form["pages"]),
-                "image": str(os.path.join(os.path.join(UPLOAD_FOLDER, filename))).replace("C:\\Users\\pc\\Desktop\\caki\\","")
+                "image": str(os.path.join(os.path.join(UPLOAD_FOLDER, filename))).replace("C:\\Users\\pc\\Desktop\\caki\\", "")
             }
-            # print(new_book)
+            print(request)
 
             books_coll.insert_one(new_book)
-            return redirect(url_for('add_book'))
+            return redirect(url_for('my_books'))
         else:
             error = "Invalid. Try Again."
             return render_template("book_form.html", error=error)
@@ -301,7 +306,7 @@ def register():
         if request.method == "POST":
             username = request.form['username']
             email = request.form['email']
-            if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+            if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
                 flash('Your email is not ok. Check format please!', category='error')
             password = request.form['password']
             if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{5,})", password):
@@ -348,6 +353,26 @@ def register():
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
+
+
+@app.route("/delete", methods=["GET", "DELETE", "POST"])
+@login_required
+def delete():
+    try:
+        if request.method == "POST":
+            name = request.form['name']
+            # print(name)
+            print(request)
+            book = books_coll.find_one_and_delete({"name": name})
+            # print(json.loads(json_util.dumps(book, ensure_ascii=False)))
+            if book:
+                session['logged_in'] = True
+                return render_template("show.html")
+            else:
+                return render_template("show.html")
+    except Exception as e:
+        print(e)
+        return {"error": str(e)}, 400
 
 
 class User(Resource):
@@ -499,16 +524,16 @@ class Books(Resource):
     #     except Exception as e:
     #         return {"error": str(e)}, 400
 
-    def delete(self, name):
-        try:
-            student = books_col.find_one_and_delete({"name": name})
-            if student:
-                return {"message": "Book deleted."}, 200
-                # return dumps(new_book), 201
-            else:
-                return {"message": "Book with this name not found."}, 404
-        except Exception as e:
-            return {"error": str(e)}, 400
+    # def delete(self, name):
+    #     try:
+    #         student = books_col.find_one_and_delete({"name": name})
+    #         if student:
+    #             return {"message": "Book deleted."}, 200
+    #             # return dumps(new_book), 201
+    #         else:
+    #             return {"message": "Book with this name not found."}, 404
+    #     except Exception as e:
+    #         return {"error": str(e)}, 400
 
 
 @app.route("/books")
@@ -518,8 +543,9 @@ def books():
         books = list(books_coll.find())
         #if user not admin
         if session["role"] == 0:
+            print(session["role"])
             if books:
-                return render_template('show.html', e_list=json.loads(json_util.dumps(books)))
+                return render_template('not_admin.html')
             else:
                 return None, 404
         elif session["role"] == 1:
@@ -533,15 +559,6 @@ def books():
         return dumps({"error": str(e)})
 
 # api.add_resource(Books, "/book/<string:name>")
-#
 
-
-
-
-
-# @app.route("/detailss")
-# @login_required
-# def detailss():
-#         return render_template('detail.html')
 
 app.run(port=5000, debug=True)

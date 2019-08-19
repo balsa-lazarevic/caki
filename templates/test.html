@@ -71,19 +71,34 @@
     {% block body %}
     {% include "layout.html" %}
     {% endblock %}
-    {% for key in e_list %}
-    <div class="overflow-auto" style='width: 50%'>
-        <table class="table table-bordered table-striped table-hover table-condensed table-responsive-sm">
-             {% for k,v in key.items() %}
-               <tr>
-                    <th style='width: 16.66%'> {{ k }} </th>
-                    <td style='width: 16.66%'> {{ v }} </td>
-               </tr>
+    {% if session.role == 1 %}
+        {% for key in e_list %}
+        <div class="overflow-auto" style='width: 50%'>
+            <table class="table table-bordered table-striped table-hover table-condensed table-responsive-sm">
+                 {% for k,v in key.items() %}
+                   <tr>
+                        <th style='width: 16.66%'> {{ k }} </th>
+                        <td style='width: 16.66%'> {{ v }} </td>
+                   </tr>
+            {% endfor %}
+            <br>
+            </table>
+        </div>
         {% endfor %}
-        <br>
-        </table>
-    </div>
-    {% endfor %}
+    {% else %}
+        <div class="col-sm-12">
+            <p style="color:red">You are not ADMIN!!!!!!!!!!!!</p>
+            <br>
+            <p style="">GO BACK</p>
+            <br>
+            <a href="{{ url_for('my_books') }}">
+                <button type="button" class="btn btn-success">
+                    <span class="glyphicon glyphicon-delete"></span>&nbsp; HOME
+                </button>
+            </a>
+        </div>
+    {% endif %}
+
 </body>
 </html>
 

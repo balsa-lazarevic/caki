@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>{% block title %}Books API{% endblock %}</title>
 <head>
-
     <meta charset="UTF-8">
+    <title>Title</title>
     <link rel="shortcut icon" type="image/png" href="#"/>
     <link rel="stylesheet" type="text/css" href="static/begin.css"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
-
-
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-static-top">
+<nav class="navbar navbar-inverse navbar-static-top">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
@@ -79,45 +76,16 @@
             </div>
         </div>
     </nav>
-{% block body %}
-<div class="albums-container container-fluid">
-    <div class="row">
-        {% if session.logged_in %}
-            <div class="col-sm-12">
-                <h3 id="welcome">Welcome {% filter upper %}{{session.username}}{% endfilter %}!</h3>
-            </div>
-        {% endif %}
-    </div>
-        {% for key in e_list %}
-                <div class="col-sm-4 col-lg-2">
-                    <div class="thumbnail">
-                        <a href="{{ url_for('details', book_name = key['name']) }}">
-                            <img src={{key['image']}} class="img-responsive">
-                        </a>
-                        <div class="caption">
-                            <h2>{{key["name"]}}</h2>
-                            <h4>{{key["price"]}} $</h4>
-                            <a target="_blank" href="{{ url_for('details', book_name = key['name']) }}" class="btn btn-primary btn-sm" role="button">Book Details</a>
-                            <form action="/delete" method="POST" style="display: inline;">
-                                <input type="hidden" name="name" value="{{key['name']}}" />
-                                <button type="submit" class="btn btn-default btn-sm">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-         {% endfor %}
-        <div class="col-sm-12">
+<div class="col-sm-12">
+            <p style="color:red">You are not ADMIN!!!!!!!!!!!!</p>
             <br>
-            <a href="{{ url_for('add_book') }}">
+            <p style="">GO BACK</p>
+            <br>
+            <a href="{{ url_for('my_books') }}">
                 <button type="button" class="btn btn-success">
-                    <span class="glyphicon glyphicon-plus"></span>&nbsp; Add Book
+                    <span class="glyphicon glyphicon-delete"></span>&nbsp; HOME
                 </button>
             </a>
-        </div>
-
 </div>
-{% endblock %}
 </body>
 </html>
