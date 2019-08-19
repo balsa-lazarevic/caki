@@ -257,7 +257,7 @@ def my_books():
         b = list(books_coll.find({"user_id": ObjectId(str(user_exists[0]["_id"]))}))
         print(b)
         if len(b) != 0:
-            session['logged_in'] = True
+            # session['logged_in'] = True
             # session['username'] = session["username"]
             return render_template('show.html', e_list=json.loads(json_util.dumps(b)))
         else:
@@ -513,6 +513,10 @@ def books():
         return dumps({"error": str(e)})
 
 # api.add_resource(Books, "/book/<string:name>")
+#
+# @app.route("/books/<string:name>")
+# @login_required
+# def details():
 
 
 app.run(port=5000, debug=True)
