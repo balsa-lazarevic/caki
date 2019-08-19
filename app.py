@@ -1,3 +1,4 @@
+import gc
 import os
 import re
 from functools import wraps
@@ -129,7 +130,7 @@ def login_required(f):
 def index():
     # resp = make_response("INDEX")
     # resp.set_cookie('username', 'the username')
-    return render_template("base.html")
+    return render_template("show.html")
 
 
 UPLOAD_FOLDER = 'C:\\Users\\pc\\Desktop\\caki\\static\\media'
@@ -167,7 +168,8 @@ def add_book():
             user_exists = list(users_coll.find({"username": str(session["username"])}))
             print(session["username"])
             print(user_exists[0]["_id"])
-
+            if request.form["quantity"] == "":
+                request.form["quantity"] = "1"
             new_book = {
                 "user_id": ObjectId(str(user_exists[0]["_id"])),
                 "name": request.form["name"],
@@ -175,7 +177,7 @@ def add_book():
                 "description": request.form["description"],
                 "quantity": int(request.form["quantity"]),
                 "pages": int(request.form["pages"]),
-                "image": str(os.path.join(os.path.join(UPLOAD_FOLDER, filename)))
+                "image": str(os.path.join(os.path.join(UPLOAD_FOLDER, filename))).replace("C:\\Users\\pc\\Desktop\\caki\\","")
             }
             print(new_book)
 
@@ -214,14 +216,16 @@ def login():
             hashed = hashlib.sha256(attempted_password.encode('ascii'))
             password = hashed.hexdigest()
             user_exists = list(users_coll.find({"username": attempted_username}))
-            if user_exists[0]["role"] == 1:
+            if user_exists[0]["username"] == str(attempted_username) and user_exists[0]["password"] == str(password) and user_exists[0]["role"] == 0:
                 session['logged_in'] = True
                 session['username'] = attempted_username
-                return redirect(url_for('logg'))
-            elif user_exists[0]["username"] == str(attempted_username) and user_exists[0]["password"] == str(password):
+                session['role'] = 0
+                return redirect(url_for('my_books'))
+            elif user_exists[0]["username"] == str(attempted_username) and user_exists[0]["password"] == str(password) and user_exists[0]["role"] == 1:
                 session['logged_in'] = True
                 session['username'] = attempted_username
-                # flash(attempted_username, attempted_password)
+                session['role'] = 1
+                flash(attempted_username, attempted_password)
                 return redirect(url_for('books'))
             else:
                 error = "Invalid credentials. Try Again."
@@ -239,10 +243,37 @@ def logout():
     session.clear()
     [session.pop(key) for key in list(session.keys())]
     print(session)
-
+    flash("You have been logged out!")
+    gc.collect()
     # remove the username from the session if it's there
     return redirect(url_for('home'))
 
+
+@app.route("/my_books", methods=["GET", "POST"])
+@login_required
+def my_books():
+    if request.method == "GET":
+        user_exists = list(users_coll.find({"username": str(session["username"])}))
+        b = list(books_coll.find({"user_id": ObjectId(str(user_exists[0]["_id"]))}))
+        print(b)
+        if len(b) != 0:
+            session['logged_in'] = True
+            # session['username'] = session["username"]
+            return render_template('show.html', e_list=json.loads(json_util.dumps(b)))
+        else:
+            # session['logged_in'] = True
+            return render_template('index.html')
+
+
+@app.route("/my_profile", methods=["GET", "POST"])
+@login_required
+def my_profile():
+    if request.method == "GET":
+        user_exists = list(users_coll.find({"username": str(session["username"])}))
+        return render_template('profile.html', user_list=json.loads(json_util.dumps(user_exists)))
+    else:
+        # session['logged_in'] = True
+        return render_template('index.html')
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -250,30 +281,43 @@ def register():
         if request.method == "POST":
             username = request.form['username']
             email = request.form['email']
+            if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+                flash('Your email is not ok. Check format please!', category='error')
             password = request.form['password']
-            hashed = hashlib.sha256(password.encode('ascii'))
-            password = hashed.hexdigest()
-
-            user_exists = list(users_coll.find({"username": username}))
-            email_exists = list(users_coll.find({"email": email}))
-            if user_exists:
-                flash("Pick another username!", category='error')
-                return render_template("registration_form.html")
-            elif email_exists:
-                flash("This email already registered!", category='error')
-                return render_template("registration_form.html")
+            if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{5,})", password):
+                flash('Password is too weak, please try with a stronger password', category='error')
             else:
-                new_user = {
-                    "username": username,
-                    "email": email,
-                    "password": password,
-                    "role": 0
-                }
-                users_coll.insert_one(new_user)
-                session['logged_in'] = True
-                session['username'] = username
-                return redirect(url_for("logg"))
-                # return dumps(new_user), 201
+                hashed = hashlib.sha256(password.encode('ascii'))
+                password = hashed.hexdigest()
+                user_exists = list(users_coll.find({"username": username}))
+                email_exists = list(users_coll.find({"email": email}))
+                if user_exists:
+                    flash("Pick another username!", category='error')
+                    return render_template("registration_form.html")
+                elif email_exists:
+                    flash("This email already registered!", category='error')
+                    return render_template("registration_form.html")
+                else:
+                    new_user = {
+                        "username": username,
+                        "email": email,
+                        "password": password,
+                        "role": 0
+                    }
+                    users_coll.insert_one(new_user)
+                    user_exists = list(users_coll.find({"username": username}))
+                    print(user_exists)
+                    if user_exists[0]["username"] == str(username) and user_exists[0]["password"] == str(password) and user_exists[0]["role"] == 1:
+                        session['logged_in'] = True
+                        session['username'] = username
+                        session['role'] = 1
+                        return redirect(url_for('books'))
+                    else:
+                        session['logged_in'] = True
+                        session['username'] = username
+                        session['role'] = 0
+                        return redirect(url_for('my_books'))
+                    # return dumps(new_user), 201
 
         return render_template("registration_form.html")
     except Exception as e:
@@ -363,17 +407,9 @@ class User(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-@app.route("/my_books")
-@login_required
-def get_my_books():
-    user_exists = list(users_coll.find({"username": str(session["username"])}))
-    b = list(books_coll.find({"user_id": ObjectId(str(user_exists[0]["_id"]))}))
-    print(b)
-    return render_template('test.html', e_list=json.loads(json_util.dumps(b)))
-
 
 @app.route("/users")
-# @login_required
+@login_required
 def users():
     try:
         users = list(users_coll.find())
@@ -454,18 +490,29 @@ class Books(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
+
 @app.route("/books")
-# @login_required
+@login_required
 def books():
     try:
         books = list(books_coll.find())
-        if books:
-            return render_template('test.html', e_list=json.loads(json_util.dumps(books)))
+        #if user not admin
+        if session["role"] == 0:
+            if books:
+                return render_template('show.html', e_list=json.loads(json_util.dumps(books)))
+            else:
+                return None, 404
+        elif session["role"] == 1:
+            if books:
+                return render_template('test.html', e_list=json.loads(json_util.dumps(books)))
+            else:
+                return None, 404
         else:
-            return None, 404
+                return None, 404
     except Exception as e:
         return dumps({"error": str(e)})
 
 # api.add_resource(Books, "/book/<string:name>")
+
 
 app.run(port=5000, debug=True)

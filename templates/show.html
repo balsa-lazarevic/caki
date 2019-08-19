@@ -22,7 +22,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('logg') }}">BOOKS-API</a>
+                <a class="navbar-brand" href="{{ url_for('books') }}">BOOKS-API</a>
             </div>
             <div class="collapse navbar-collapse" id="topNavBar">
                 <ul class="nav navbar-nav">
@@ -31,7 +31,8 @@
                             <span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp;  Books
                         </a>
                     </li>
-                     {% if session.role == 1 %}
+                </ul>
+                {% if session.role == 1 %}
                     <ul class="nav navbar-nav">
                       <li class="">
                         <a href="{{ url_for('users') }}">
@@ -40,7 +41,6 @@
                       </li>
                         </ul>
                 {% endif %}
-                </ul>
                 <ul class="nav navbar-nav navbar-right">
                      <li>
                         <a href="{{ url_for('add_book') }}">
@@ -69,14 +69,35 @@
             </div>
         </div>
     </nav>
-    {% block body %}
-    {% include "layout.html" %}
-    {% endblock %}
+{% block body %}
+<div class="albums-container container-fluid">
+    <div class="row">
+        {% if session.logged_in %}
+            <div class="col-sm-12">
+                <h3 id="welcome">Welcome {{session.username}}!</h3>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-sm-4 col-lg-2">
+        <div class="thumbnail">
+            <a href="">
+                <img src="static/media/5.jpg" class="img-responsive">
+            </a>
+            <div class="caption">
+                <h2>TITLE</h2>
+                <h4>book</h4>
 
-
-    <!--<footer class="navbar navbar-fixed-bottom">-->
-      <!--<div class="footer-copyright text-center py-3">© 2019 Copyright: BOOKS-->
-      <!--</div>-->
-    <!--</footer>-->
+                <a href="" class="btn btn-primary btn-sm" role="button">View Details</a>
+                <form action="" method="post" style="display: inline;">
+                    <input type="hidden" name="album_id" value="" />
+                    <button type="submit" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </form>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 </body>
 </html>

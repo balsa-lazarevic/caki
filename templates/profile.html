@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>{% block title %}Books API{% endblock %}</title>
+<title>{% block title %}{{session.username}} Profile{% endblock %}</title>
 <head>
 
     <meta charset="UTF-8">
@@ -22,16 +22,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('logg') }}">BOOKS-API</a>
+                <a class="navbar-brand" href="{{ url_for('books') }}">BOOKS-API</a>
             </div>
             <div class="collapse navbar-collapse" id="topNavBar">
                 <ul class="nav navbar-nav">
-                    <li class="active">
+                    <li>
                         <a href="{{ url_for('books') }}">
                             <span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp;  Books
                         </a>
                     </li>
-                     {% if session.role == 1 %}
+                </ul>
+                {% if session.role == 1 %}
                     <ul class="nav navbar-nav">
                       <li class="">
                         <a href="{{ url_for('users') }}">
@@ -40,7 +41,6 @@
                       </li>
                         </ul>
                 {% endif %}
-                </ul>
                 <ul class="nav navbar-nav navbar-right">
                      <li>
                         <a href="{{ url_for('add_book') }}">
@@ -48,7 +48,7 @@
                         </a>
                     </li>
                     {% if session.role == 0 %}
-                         <li>
+                         <li class="active">
                             <a href="{{ url_for('my_profile') }}">
                                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; My profile
                             </a>
@@ -69,14 +69,57 @@
             </div>
         </div>
     </nav>
-    {% block body %}
-    {% include "layout.html" %}
-    {% endblock %}
 
+<div class="container">
+    <div class="row profile">
+		<div class="col-md-3">
+			<div class="profile-sidebar">
+				<!-- SIDEBAR USERPIC -->
+				<div class="profile-userpic">
+					<img src="static/images/avatar.jpg" class="img-responsive" alt="user">
+				</div>
+				<!-- END SIDEBAR USERPIC -->
+				<!-- SIDEBAR USER TITLE -->
+				<div class="profile-usertitle">
+					<div class="profile-usertitle-name">
+						{{session.username}}
+					</div>
+				</div>
+				<!-- END SIDEBAR USER TITLE -->
+				<!-- SIDEBAR BUTTONS -->
+				<div class="profile-userbuttons">
+					<button type="button" class="btn btn-success btn-sm">Edit</button>
+				</div>
+				<div class="profile-usermenu">
+					<ul class="nav">
+						<li class="active">
+							<a href="#">
+							<i class="glyphicon glyphicon-home"></i>
+							Overview </a>
+						</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="profile-content">
+			   {% for key in user_list %}
+    <div class="overflow-auto" style='width: 50%'>
+        <table class="table table-bordered table-striped table-hover table-condensed table-responsive-sm">
+             {% for k,v in key.items() %}
+               <tr>
+                    <th style='width: 16.66%'> {{ k }} </th>
+                    <td style='width: 16.66%'> {{ v }} </td>
+               </tr>
+        {% endfor %}
+        <br>
+        </table>
+    </div>
+{% endfor %}
+            </div>
+		</div>
+    </div>
 
-    <!--<footer class="navbar navbar-fixed-bottom">-->
-      <!--<div class="footer-copyright text-center py-3">© 2019 Copyright: BOOKS-->
-      <!--</div>-->
-    <!--</footer>-->
+</div>
 </body>
 </html>
