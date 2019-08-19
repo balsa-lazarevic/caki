@@ -163,11 +163,11 @@ def add_book():
                 filename = secure_filename(image.filename)
                 image.save(os.path.join(os.path.join(UPLOAD_FOLDER, filename)))
                 print("Image saved")
-                print(str(os.path.join(os.path.join(UPLOAD_FOLDER, filename))))
+                # print(str(os.path.join(os.path.join(UPLOAD_FOLDER, filename))))
 
             user_exists = list(users_coll.find({"username": str(session["username"])}))
-            print(session["username"])
-            print(user_exists[0]["_id"])
+            # print(session["username"])
+            # print(user_exists[0]["_id"])
             if request.form["quantity"] == "":
                 request.form["quantity"] = "1"
             new_book = {
@@ -179,7 +179,7 @@ def add_book():
                 "pages": int(request.form["pages"]),
                 "image": str(os.path.join(os.path.join(UPLOAD_FOLDER, filename))).replace("C:\\Users\\pc\\Desktop\\caki\\","")
             }
-            print(new_book)
+            # print(new_book)
 
             books_coll.insert_one(new_book)
             return redirect(url_for('add_book'))
@@ -194,7 +194,7 @@ def add_book():
 @app.route('/logg')
 @login_required
 def logg():
-    print(session)
+    # print(session)
     return render_template("index.html")
 
 
@@ -242,7 +242,7 @@ def login():
 def logout():
     session.clear()
     [session.pop(key) for key in list(session.keys())]
-    print(session)
+    # print(session)
     flash("You have been logged out!")
     gc.collect()
     # remove the username from the session if it's there
@@ -255,7 +255,7 @@ def my_books():
     if request.method == "GET":
         user_exists = list(users_coll.find({"username": str(session["username"])}))
         b = list(books_coll.find({"user_id": ObjectId(str(user_exists[0]["_id"]))}))
-        print(b)
+        # print(b)
         if len(b) != 0:
             # session['logged_in'] = True
             # session['username'] = session["username"]
@@ -274,6 +274,26 @@ def my_profile():
     else:
         # session['logged_in'] = True
         return render_template('index.html')
+
+
+@app.route("/details_<string:book_name>")
+@login_required
+def details(book_name):
+        try:
+            user_exists = list(users_coll.find({"username": str(session["username"])}))
+            b = list(books_coll.find({"user_id": ObjectId(str(user_exists[0]["_id"])), "name": book_name}))
+            if len(b) != 0:
+                # book = json.loads(json_util.dumps(b))
+                # return render_template('detail.html', book_list=json.loads(json_util.dumps(b)))
+                # return str(book)
+                # print(json.loads(json_util.dumps(b)))
+                return render_template('detail.html', b_list=json.loads(json_util.dumps(b)))
+            else:
+                return render_template('show.html')
+        except Exception as e:
+                print(e)
+                return {"error": str(e)}, 400
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -306,7 +326,7 @@ def register():
                     }
                     users_coll.insert_one(new_user)
                     user_exists = list(users_coll.find({"username": username}))
-                    print(user_exists)
+                    # print(user_exists)
                     if user_exists[0]["username"] == str(username) and user_exists[0]["password"] == str(password) and user_exists[0]["role"] == 1:
                         session['logged_in'] = True
                         session['username'] = username
@@ -514,9 +534,14 @@ def books():
 
 # api.add_resource(Books, "/book/<string:name>")
 #
-# @app.route("/books/<string:name>")
-# @login_required
-# def details():
 
+
+
+
+
+# @app.route("/detailss")
+# @login_required
+# def detailss():
+#         return render_template('detail.html')
 
 app.run(port=5000, debug=True)

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>{% block title %}Books API{% endblock %}</title>
+<title>{% block title %}Details{% endblock %}</title>
 <head>
 
     <meta charset="UTF-8">
@@ -79,45 +79,68 @@
             </div>
         </div>
     </nav>
-{% block body %}
-<div class="albums-container container-fluid">
-    <div class="row">
-        {% if session.logged_in %}
-            <div class="col-sm-12">
-                <h3 id="welcome">Welcome {% filter upper %}{{session.username}}{% endfilter %}!</h3>
-            </div>
-        {% endif %}
-    </div>
-        {% for key in e_list %}
-                <div class="col-sm-4 col-lg-2">
-                    <div class="thumbnail">
-                        <a href="#">
-                            <img src={{key['image']}} class="img-responsive">
-                        </a>
-                        <div class="caption">
-                            <h2>{{key["name"]}}</h2>
-
-                            <h4>{{key["price"]}} $</h4>
-                            <a target="_blank" href="{{ url_for('details', book_name = key['name']) }}" class="btn btn-primary btn-sm" role="button">Book Details</a>
-                            <form action="" method="post" style="display: inline;">
-                                <input type="hidden" name="_id" value="{{key['_id']}}" />
-                                <button type="submit" class="btn btn-default btn-sm">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </button>
-                            </form>
+    <div class="container-fluid songs-container">
+            <div class="row">
+                <div class="col-sm-4 col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            {% for key in b_list %}
+                                <a href="#">
+                                    <img src={{key["image"]}} class="img-responsive">
+                                 </a>
+                                <h1> AA<small>BB</small></h1>
+                                <h2>AA</h2>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
-         {% endfor %}
-        <div class="col-sm-12">
-            <br>
-            <a href="{{ url_for('add_book') }}">
-                <button type="button" class="btn btn-success">
-                    <span class="glyphicon glyphicon-plus"></span>&nbsp; Add Book
-                </button>
-            </a>
+                <div class="col-sm-8 col-md-9">
+
+                    {% for key in b_list %}
+                        <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                            <li role="presentation" class="active"><a href="#">Hey, you can earn: </a></li>
+                        </ul>
+                    {% endfor %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h3>Book details:</h3>
+                            {% if error_message %}
+                                <p><strong>{{ error_message }}</strong></p>
+                            {% endif %}
+                            <table class="table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Description</th>
+                                        <th>Quantity</th>
+                                        <th>Pages</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for key in b_list %}
+                                <tr>
+                                    <td>{{ key["name"] }}</td>
+
+                                    <td>{{ key["price"] }}</td>
+
+                                    <td>{{ key["description"] }}</td>
+
+                                    <td>{{ key["quantity"] }}</td>
+
+                                    <td>{{ key["pages"] }}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-</div>
-{% endblock %}
 </body>
 </html>
+
+
+
