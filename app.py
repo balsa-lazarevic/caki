@@ -236,7 +236,7 @@ def login():
                 flash(attempted_username, attempted_password)
                 return redirect(url_for('books'))
             else:
-                error = "Invalid credentials. Try Again."
+                flash("Invalid credentials. Try Again.")
 
         return render_template("login.html", error=error)
 
@@ -471,6 +471,40 @@ def users():
 
 
 api.add_resource(User, "/user/<string:name>")
+
+
+@app.route("/change_password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    try:
+        if request.method == "POST":
+            name = session["username"]
+            print(name)
+            password = request.form['password']
+            if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{5,})", password):
+                flash('Password is too weak, please try with a stronger password', category='error')
+            else:
+                hashed = hashlib.sha256(password.encode('ascii'))
+                hashed_password = hashed.hexdigest()
+            print(hashed_password)
+            # print(request)
+            user = users_coll.find({"username": name})
+            old_pass = {"password": json.loads(json_util.dumps(user))[0]["password"]}
+            print(old_pass)
+            new_password = {"$set": {"password": hashed_password}}
+            print(new_password)
+            users_coll.update_one(old_pass, new_password)
+            return redirect(url_for('my_profile'))
+    except Exception as e:
+            print(e)
+            return {"error": str(e)}, 400
+    # return render_template("change_password.html")
+
+
+@app.route("/update_password")
+@login_required
+def update_password():
+    return render_template("change_password.html")
 
 
 class Books(Resource):
