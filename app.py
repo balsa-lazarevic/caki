@@ -174,7 +174,10 @@ def add_book():
                 request.form["quantity"] = "1"
             if re.match(r"([\\s])", str(request.form["name"])):
                 request.form["name"] = request.form["name"].replace(" ", "+")
+            if re.match(r"([\\s])", str(request.form["description"])):
+                request.form["description"] = request.form["description"].replace(" ", "+")
             print(request.form["name"])
+            print(request.form["description"])
             new_book = {
                 "user_id": ObjectId(str(user_exists[0]["_id"])),
                 "name": request.form["name"],
@@ -367,7 +370,7 @@ def delete():
             # print(json.loads(json_util.dumps(book, ensure_ascii=False)))
             if book:
                 session['logged_in'] = True
-                return render_template("show.html")
+                return redirect(url_for('my_books'))
             else:
                 return render_template("show.html")
     except Exception as e:
