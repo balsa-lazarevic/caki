@@ -486,7 +486,7 @@ def change_password():
             else:
                 hashed = hashlib.sha256(password.encode('ascii'))
                 hashed_password = hashed.hexdigest()
-            print(hashed_password)
+                print(hashed_password)
             # print(request)
             user = users_coll.find({"username": name})
             old_pass = {"password": json.loads(json_util.dumps(user))[0]["password"]}
@@ -596,6 +596,28 @@ def books():
         return dumps({"error": str(e)})
 
 # api.add_resource(Books, "/book/<string:name>")
+
+
+@app.route("/search", methods=["POST"])
+@login_required
+def search():
+    try:
+        if request.method == "POST":
+            print(request)
+            searched = request.form['book_name']
+            if re.match(r"([\\s])", str(searched)):
+                searched = searched.replace(" ", "+")
+            print(searched)
+            user_exists = list(users_coll.find({"username": str(session["username"])}))
+            b = list(books_coll.find({"user_id": ObjectId(str(user_exists[0]["_id"])), "name": {'$regex': str(searched)}}))
+            print(str(b))
+            if len(b) != 0:
+                return render_template('show.html', e_list=json.loads(json_util.dumps(b)))
+            else:
+                return render_template('show.html')
+    except Exception as e:
+            print(e)
+            return {"error": str(e)}, 400
 
 
 app.run(port=5000, debug=True)
