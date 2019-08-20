@@ -1,6 +1,6 @@
 import hashlib
 
-raw_value = 'Stasa125'
+raw_value = "Admin123"
 
 hash_value = hashlib.sha256(raw_value.encode('ascii'))
 

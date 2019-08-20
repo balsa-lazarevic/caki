@@ -507,6 +507,73 @@ def update_password():
     return render_template("change_password.html")
 
 
+@app.route("/edit")
+@login_required
+def edit():
+    return render_template("edit_book.html", old_name="TEST")
+
+
+@app.route("/edit_book_<string:book_name>", methods=["GET", "POST"])
+@login_required
+def edit_book(book_name):
+    try:
+        if request.method == "POST":
+            name = session["username"]
+            user = users_coll.find({"username": name})
+            print(user)
+            if request.files:
+                image = request.files["image"]
+            if image.filename == "":
+                print("No filename")
+            if allowed_image(image.filename):
+                filename = secure_filename(image.filename)
+            if request.form["quantity"] == "":
+                request.form["quantity"] = "1"
+            if re.match(r"([\\s])", str(request.form["name"])):
+                request.form["name"] = request.form["name"].replace(" ", "+")
+            if re.match(r"([\\s])", str(request.form["description"])):
+                request.form["description"] = request.form["description"].replace(" ", "+")
+
+            b = list(books_coll.find({"user_id": ObjectId(str(user[0]["_id"])), "name": book_name}))
+            old_name = {"name": json.loads(json_util.dumps(b))[0]["name"]}
+            if str(request.form["name"]) != str(old_name):
+                print("Name changed!")
+                new_name = {"$set": {"name": str(request.form["name"])}}
+                books_coll.update_one(old_name, new_name)
+
+            old_price = {"price": json.loads(json_util.dumps(b))[0]["price"]}
+            if str(request.form["price"]) != str(old_price):
+                print("Price changed!")
+                new_price = {"$set": {"price": int(request.form["price"])}}
+                books_coll.update_one(old_price, new_price)
+
+            old_description = {"description": json.loads(json_util.dumps(b))[0]["description"]}
+            if str(request.form["description"]) != str(old_description):
+                new_description = {"$set": {"description": str(request.form["description"])}}
+                books_coll.update_one(old_description, new_description)
+
+            old_quantity = {"quantity": json.loads(json_util.dumps(b))[0]["quantity"]}
+            if str(request.form["quantity"]) != str(old_quantity):
+                new_quantity = {"$set": {"quantity": int(request.form["quantity"])}}
+                books_coll.update_one(old_quantity, new_quantity)
+
+            old_pages = {"pages": json.loads(json_util.dumps(b))[0]["pages"]}
+            if str(request.form["pages"]) != str(old_pages):
+                new_pages = {"$set": {"pages": int(request.form["pages"])}}
+                books_coll.update_one(old_pages, new_pages)
+
+            old_image = {"image": json.loads(json_util.dumps(b))[0]["image"]}
+            if str(request.form["image"]) != str(old_image):
+                image.save(os.path.join(os.path.join(UPLOAD_FOLDER, filename)))
+                new_image = {"$set": {"image": str(os.path.join(os.path.join(UPLOAD_FOLDER, filename))).replace("C:\\Users\\pc\\Desktop\\caki\\", "")}}
+                books_coll.update_one(old_image, new_image)
+        return redirect(url_for('my_books'))
+    except Exception as e:
+            print(e)
+            return {"error": str(e)}, 400
+    # return render_template("change_password.html")
+
+
 class Books(Resource):
     def get(self, name):
         try:
